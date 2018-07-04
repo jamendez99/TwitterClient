@@ -2,15 +2,18 @@ package com.codepath.apps.restclienttemplate.models;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-
+@Parcel
 public class Tweet {
 
-    // Fields made public for Parceler
+
     public String body;
     public long uid;
     public User user;
     public String createdAt;
+
+    public Tweet() {}
 
 
     // deserialize the JSON

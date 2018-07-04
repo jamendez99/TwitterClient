@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -14,6 +16,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -21,6 +24,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 1;
     private TwitterClient client;
     private TweetAdapter tweetAdapter;
     ArrayList<Tweet> tweets;
@@ -32,7 +36,6 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         client = TwitterApp.getRestClient(this);
-        populateTimeline();
 
         // find RecyclerView
         rvTweets = findViewById(R.id.rvTweet);
@@ -59,7 +62,7 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                 Log.d("TwitterClient", response.toString());
+                Log.d("TwitterClient", response.toString());
 
                 // iterate through JSONArray
                 for (int i = 0; i < response.length(); i++) {
@@ -79,7 +82,6 @@ public class TimelineActivity extends AppCompatActivity {
                 }
 
             }
-
 
 
             @Override
@@ -110,6 +112,26 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     public void onComposeAction(MenuItem mi) {
-        // handle click here
+        // create intent for the new activity
+        Intent intent = new Intent(this, ComposeActivity.class);
+        // Show the activity
+        this.startActivityForResult(intent, REQUEST_CODE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            // Extract name value from result extras
+            Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("my_tweet"));
+            tweets.add(0, tweet);
+            tweetAdapter.notifyItemInserted(0);
+            rvTweets.scrollToPosition(0);
+            // Toast the name to display temporarily on screen
+            Toast.makeText(this, tweet.body, Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i("TimelineActivity", "xxxxxxx THIS FUCKED UP xxxxxxxx");
+        }
     }
 }
