@@ -124,7 +124,7 @@ public class TimelineActivity extends AppCompatActivity {
         // REQUEST_CODE is defined above
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             // Extract name value from result extras
-            Tweet tweet = Parcels.unwrap(getIntent().getParcelableExtra("my_tweet"));
+            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("my_tweet"));
             tweets.add(0, tweet);
             tweetAdapter.notifyItemInserted(0);
             rvTweets.scrollToPosition(0);
