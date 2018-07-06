@@ -41,41 +41,55 @@ public class ComposeActivity extends AppCompatActivity {
         // EditText etCompose = findViewById(R.id.etCompose);
         String tweetText = etCompose.getText().toString();
 
-        client.sendTweet(tweetText, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    Log.i("ComposeActivity", "Start of try block");
-                    Tweet tweet = Tweet.fromJSON(response);
-                    Intent intent = new Intent();
-                    intent.putExtra("my_tweet", Parcels.wrap(tweet));
-                    setResult(RESULT_OK, intent);
-                    finish();
-                    Log.i("ComposeActivity", "End of try block");
-                } catch (JSONException e) {
-                    Log.i("ComposeActivity", "JSON exception in catch block");
-                    e.printStackTrace();
+        if (getIntent().getBooleanExtra("isReply", false)) {
+            client.sendTweet(tweetText, getIntent().getLongExtra("uid", 0), new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        Tweet tweet = Tweet.fromJSON(response);
+                        Intent intent = new Intent();
+                        intent.putExtra("my_tweet", Parcels.wrap(tweet));
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
+            });
+        } else {
+            client.sendTweet(tweetText, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        Tweet tweet = Tweet.fromJSON(response);
+                        Intent intent = new Intent();
+                        intent.putExtra("my_tweet", Parcels.wrap(tweet));
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.i("ComposeActivity", "Failed to handle response");
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.i("ComposeActivity", "Failed to handle response");
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                }
 
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                }
+            });
+        }
     }
 
 

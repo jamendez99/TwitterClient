@@ -145,7 +145,7 @@ public class TimelineActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // REQUEST_CODE is defined above
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+        if (resultCode == RESULT_OK && (requestCode == REQUEST_CODE || requestCode == 2)) {
             // Extract name value from result extras
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("my_tweet"));
             tweets.add(0, tweet);
@@ -154,7 +154,7 @@ public class TimelineActivity extends AppCompatActivity {
             // Toast the name to display temporarily on screen
             Toast.makeText(this, tweet.body, Toast.LENGTH_SHORT).show();
         } else {
-            Log.i("TimelineActivity", "xxxxxxx THIS FUCKED UP xxxxxxxx");
+            Log.i("TimelineActivity", "xxxxxxx THIS F***D UP xxxxxxxx");
         }
     }
 

@@ -1,12 +1,15 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -66,11 +69,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     // create ViewHolder class
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public /*static*/ class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivProfileImage;
         public TextView tvUseranme;
         public TextView tvBody;
         public TextView tvTimeStamp;
+        public ImageButton ibReply;
 
 
         public ViewHolder(View itemView) {
@@ -81,6 +85,20 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvUseranme = itemView.findViewById(R.id.tvUserName);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvTimeStamp = itemView.findViewById(R.id.tvTimeStamp);
+            ibReply = itemView.findViewById(R.id.ibReply);
+            ibReply.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    Tweet reply = mTweets.get(pos);
+                    Intent intent = new Intent(v.getContext(), ComposeActivity.class);
+                    intent.putExtra("isReply", true);
+                    intent.putExtra("uid", reply.uid);
+                    Activity act = (Activity) v.getContext();
+                    act.startActivityForResult(intent, 2);
+                }
+            });
 
 
 
