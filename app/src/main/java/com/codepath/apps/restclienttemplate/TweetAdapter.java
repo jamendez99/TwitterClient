@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 
+import org.parceler.Parcels;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -69,7 +71,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     // create ViewHolder class
 
-    public /*static*/ class ViewHolder extends RecyclerView.ViewHolder {
+    public /*static*/ class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView ivProfileImage;
         public TextView tvUseranme;
         public TextView tvBody;
@@ -99,14 +101,26 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                     act.startActivityForResult(intent, 2);
                 }
             });
+            itemView.setOnClickListener(this);
 
 
 
         }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                Tweet tweet = mTweets.get(position);
+                Intent intent = new Intent(context, TweetDetailsActivity.class);
+                intent.putExtra("tweet", Parcels.wrap(tweet));
+                context.startActivity(intent);
+            }
+        }
     }
 
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
-    public String getRelativeTimeAgo(String rawJsonDate) {
+    public static String getRelativeTimeAgo(String rawJsonDate) {
         String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
         SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
         sf.setLenient(true);
