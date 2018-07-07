@@ -77,4 +77,12 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("auto_populate_reply_metadata", true);
 		client.post(apiUrl, params, handler);
 	}
+
+	// For retweet
+	public void retweet(long id, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/retweet/:id.jason");
+		RequestParams params = new RequestParams();
+		params.put("id", id);
+		client.post(apiUrl, params, handler);
+	}
 }
